@@ -1,0 +1,130 @@
+{
+  "updatedAt": "2026-11-17T09:30:00.000Z",
+  "kpis": {
+    "structures": {
+      "label": "Structures",
+      "value": 128,
+      "badge": "Normal",
+      "description": "Fiches dans l'annuaire",
+      "trend": "+6 %",
+      "trendDirection": "up"
+    },
+    "demandes": {
+      "label": "Demandes SAEI",
+      "value": 9,
+      "badge": "À traiter",
+      "description": "Comptes à valider",
+      "trend": "+2",
+      "trendDirection": "up"
+    },
+    "entrepreneurs": {
+      "label": "Entrepreneurs",
+      "value": 342,
+      "badge": "Normal",
+      "description": "Inscrits sur la plateforme",
+      "trend": "+12 %",
+      "trendDirection": "up"
+    },
+    "completude": {
+      "label": "Complétude",
+      "value": 86,
+      "unit": "%",
+      "badge": "Optimal",
+      "description": "Qualité des données",
+      "trend": "+3 pts",
+      "trendDirection": "up"
+    }
+  },
+  "superAdminKpis": {
+    "administrateurs": {
+      "label": "Administrateurs",
+      "value": 12,
+      "description": "Comptes de gestion"
+    },
+    "imports": {
+      "label": "Imports",
+      "value": "14 nov. 2026",
+      "description": "Fichiers Excel"
+    },
+    "recommandations": {
+      "label": "Recommandations",
+      "value": 1874,
+      "description": "Usage de l'outil",
+      "trend": "+18 %",
+      "trendDirection": "up"
+    },
+    "tauxValidation": {
+      "label": "Taux de validation",
+      "value": 78,
+      "unit": "%",
+      "description": "Délai moyen : 3 jours",
+      "trend": "+5 pts",
+      "trendDirection": "up"
+    }
+  },
+  "structuresParPays": [
+    { "name": "Bénin", "value": 54 },
+    { "name": "Sénégal", "value": 41 },
+    { "name": "Côte d'Ivoire", "value": 33 }
+  ],
+  "structuresParTypologie": [
+    { "name": "Incubateur", "value": 38, "color": "var(--chart-1)" },
+    { "name": "Accélérateur", "value": 27, "color": "var(--chart-2)" },
+    { "name": "Recherche & innovation", "value": 21, "color": "var(--chart-3)" },
+    { "name": "Appui technique", "value": 18, "color": "var(--chart-4)" },
+    { "name": "Financement", "value": 14, "color": "var(--chart-5)" },
+    { "name": "Plateforme & réseau", "value": 10, "color": "var(--chart-6)" }
+  ],
+  "statutPays": [
+    { "name": "Bénin", "value": 54, "upToDate": true },
+    { "name": "Sénégal", "value": 41, "upToDate": true },
+    { "name": "Côte d'Ivoire", "value": 33, "upToDate": false }
+  ],
+  "activite": {
+    "indicateurs": [
+      { "label": "Moyenne / jour", "value": "62" },
+      { "label": "Pic", "value": "118" },
+      { "label": "Taux de réussite", "value": "74 %" }
+    ],
+    "series": [
+      { "jour": "Lun", "recommandations": 48, "objectif": 70 },
+      { "jour": "Mar", "recommandations": 61, "objectif": 70 },
+      { "jour": "Mer", "recommandations": 55, "objectif": 70 },
+      { "jour": "Jeu", "recommandations": 78, "objectif": 70 },
+      { "jour": "Ven", "recommandations": 118, "objectif": 70 },
+      { "jour": "Sam", "recommandations": 92, "objectif": 70 },
+      { "jour": "Dim", "recommandations": 44, "objectif": 70 }
+    ],
+    "analyse": [
+      { "label": "Jour de pic", "value": "Vendredi · 118" },
+      { "label": "Jour le plus calme", "value": "Dimanche · 44" },
+      { "label": "Écart", "value": "74 recommandations" }
+    ]
+  },
+  "besoins": [
+    { "label": "Financement adapté", "value": 68 },
+    { "label": "Suivi après accompagnement", "value": 54 },
+    { "label": "Accès aux marchés", "value": 47 },
+    { "label": "Prototypage", "value": 39 },
+    { "label": "Coordination", "value": 31 }
+  ],
+  "couverture": [
+    { "ville": "Cotonou", "structures": 22 },
+    { "ville": "Dakar", "structures": 18 },
+    { "ville": "Abidjan", "structures": 16 },
+    { "ville": "Porto-Novo", "structures": 7 },
+    { "ville": "Saint-Louis", "structures": 4 },
+    { "ville": "Bouaké", "structures": 2 }
+  ],
+  "stades": [
+    { "label": "Idéation", "value": 34 },
+    { "label": "Incubation", "value": 41 },
+    { "label": "Accélération", "value": 29 },
+    { "label": "Développement", "value": 24 }
+  ],
+  "journal": [
+    { "date": "17/11/2026 09:12", "auteur": "Alice Dossou", "action": "Approbation de la demande SAEI · AgriTech Bénin" },
+    { "date": "16/11/2026 16:40", "auteur": "Moussa Ndiaye", "action": "Import Excel · 12 structures mises à jour" },
+    { "date": "16/11/2026 11:05", "auteur": "Alice Dossou", "action": "Désactivation du compte · contact@exemple.bj" }
+  ]
+}
