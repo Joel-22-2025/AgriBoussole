@@ -93,4 +93,20 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    // Découpage des dépendances pour éviter un chunk initial > 500 kB.
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined
+          if (id.includes('recharts') || id.includes('d3-')) return 'charts'
+          if (id.includes('radix-ui') || id.includes('lucide-react') || id.includes('sonner')) {
+            return 'ui-vendor'
+          }
+          if (id.includes('react') || id.includes('scheduler')) return 'react-vendor'
+          return 'vendor'
+        },
+      },
+    },
+  },
 })
