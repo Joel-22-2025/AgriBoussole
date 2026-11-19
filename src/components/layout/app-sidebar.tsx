@@ -17,6 +17,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useAuth } from '@/features/auth/use-auth'
+import { UnreadBadge } from '@/features/engagement/unread-badge'
+import { useUnreadCount } from '@/features/engagement/use-unread-count'
 import { ROLE_LABELS } from '@/lib/api/types'
 import { APP_NAME } from '@/lib/env'
 import { cn, getDisplayName, getInitials } from '@/lib/utils'
@@ -30,7 +32,7 @@ interface AppSidebarProps {
 
 function itemClassName(isActive: boolean, expanded: boolean) {
   return cn(
-    'flex shrink-0 items-center rounded-full transition-colors duration-150',
+    'relative flex shrink-0 items-center rounded-full transition-colors duration-150',
     expanded ? 'h-11 w-full gap-3 px-3' : 'size-11 justify-center',
     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
     isActive
@@ -44,7 +46,15 @@ function useIsActive(item: NavItem): boolean {
   return item.end ? pathname === item.to : pathname.startsWith(item.to)
 }
 
-function DesktopItem({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
+function DesktopItem({
+  item,
+  collapsed,
+  unreadCount,
+}: {
+  item: NavItem
+  collapsed: boolean
+  unreadCount: number
+}) {
   const isActive = useIsActive(item)
 
   const link = (
@@ -56,6 +66,12 @@ function DesktopItem({ item, collapsed }: { item: NavItem; collapsed: boolean })
     >
       <item.icon className="size-5 shrink-0" aria-hidden="true" />
       {!collapsed && <span className="truncate text-sm font-medium">{item.label}</span>}
+      {item.to.includes('/messages') && (
+        <UnreadBadge
+          count={unreadCount}
+          className={collapsed ? 'absolute -top-1 -right-1' : 'ml-auto'}
+        />
+      )}
     </Link>
   )
 
@@ -71,7 +87,7 @@ function DesktopItem({ item, collapsed }: { item: NavItem; collapsed: boolean })
   )
 }
 
-function MobileItem({ item }: { item: NavItem }) {
+function MobileItem({ item, unreadCount }: { item: NavItem; unreadCount: number }) {
   const isActive = useIsActive(item)
 
   return (
@@ -82,12 +98,16 @@ function MobileItem({ item }: { item: NavItem }) {
       className={itemClassName(isActive, false)}
     >
       <item.icon className="size-5" aria-hidden="true" />
+      {item.to.includes('/messages') && (
+        <UnreadBadge count={unreadCount} className="absolute -top-1 -right-1" />
+      )}
     </Link>
   )
 }
 
 export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
   const { state, logout } = useAuth()
+  const unreadCount = useUnreadCount()
   const navigate = useNavigate()
   const user = state.user
   const items = getNavigation(user?.role ?? null)
@@ -110,8 +130,8 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
       >
         <div className={cn('flex items-center', collapsed ? 'flex-col gap-3' : 'justify-between')}>
           <Link
-            to="/"
-            aria-label={`${APP_NAME} — accueil`}
+            to={getHomePath(user?.role ?? null)}
+            aria-label={`${APP_NAME} — mon espace`}
             className="flex size-11 shrink-0 items-center justify-center rounded-full bg-icon-active text-[var(--green-on-icon-active)]"
           >
             <SproutIcon className="size-6" aria-hidden="true" />
@@ -131,9 +151,14 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
           </button>
         </div>
 
-        <nav className="mt-7 flex w-full flex-1 flex-col items-center gap-2 overflow-y-auto pb-2">
+        <nav className="mt-7 flex w-full flex-1 flex-col items-center gap-2">
           {items.map((item) => (
-            <DesktopItem key={`${item.to}-${item.label}`} item={item} collapsed={collapsed} />
+            <DesktopItem
+              key={`${item.to}-${item.label}`}
+              item={item}
+              collapsed={collapsed}
+              unreadCount={unreadCount}
+            />
           ))}
         </nav>
 
@@ -173,9 +198,6 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
                 <DropdownMenuItem asChild>
                   <Link to={getHomePath(user.role)}>Mon espace</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/structures">Annuaire des structures</Link>
-                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem variant="destructive" onClick={() => void handleLogout()}>
                   <LogOutIcon />
@@ -204,10 +226,14 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
 
       <nav
         aria-label="Navigation mobile"
-        className="sidebar-surface fixed inset-x-3 bottom-3 z-40 flex items-center gap-2 overflow-x-auto rounded-side px-3 py-2.5 md:hidden"
+        className="sidebar-surface fixed inset-x-3 bottom-3 z-40 flex flex-wrap items-center justify-center gap-2 rounded-side px-3 py-2.5 md:hidden"
       >
         {items.map((item) => (
-          <MobileItem key={`${item.to}-${item.label}`} item={item} />
+          <MobileItem
+            key={`${item.to}-${item.label}`}
+            item={item}
+            unreadCount={unreadCount}
+          />
         ))}
         {user && (
           <button

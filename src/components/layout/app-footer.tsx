@@ -1,6 +1,7 @@
 import { ArrowRightIcon, CompassIcon, SproutIcon, UsersIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+import { LanguageSwitcher } from '@/components/layout/language-switcher'
 import { useAuth } from '@/features/auth/use-auth'
 import { APP_NAME } from '@/lib/env'
 import { cn } from '@/lib/utils'
@@ -105,6 +106,7 @@ export function AppFooter({ variant = 'full' }: AppFooterProps) {
           </p>
           <p>Conçu pour l’écosystème agricole ouest-africain.</p>
           <p>Bénin · Sénégal · Côte d’Ivoire</p>
+          <LanguageSwitcher className="-ml-2 self-start md:ml-auto" />
         </div>
       </div>
     </footer>

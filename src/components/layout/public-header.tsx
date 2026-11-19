@@ -5,6 +5,8 @@ import {
   LogInIcon,
   LogOutIcon,
   MenuIcon,
+  MessageSquareIcon,
+  SparklesIcon,
   SproutIcon,
   UserRoundIcon,
 } from 'lucide-react'
@@ -12,6 +14,7 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
+import { LanguageSwitcher } from '@/components/layout/language-switcher'
 import { Button, buttonVariants } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -32,6 +35,8 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { useAuth } from '@/features/auth/use-auth'
+import { UnreadBadge } from '@/features/engagement/unread-badge'
+import { useUnreadCount } from '@/features/engagement/use-unread-count'
 import { ROLE_LABELS } from '@/lib/api/types'
 import { APP_NAME } from '@/lib/env'
 import { cn, getDisplayName, getInitials } from '@/lib/utils'
@@ -54,6 +59,7 @@ const ENTREPRENEUR_LINKS: HeaderLink[] = [
   { to: '/offres', label: 'Offres' },
   { to: '/indicateurs', label: 'Indicateurs' },
   { to: '/messages', label: 'Messages' },
+  { to: '/assistant', label: 'Boussole IA' },
 ]
 
 function isActive(pathname: string, to: string, end?: boolean) {
@@ -87,9 +93,16 @@ export function PublicHeader() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const user = state.user
+  const unreadCount = useUnreadCount()
   const displayName = getDisplayName(user?.first_name, user?.last_name, user?.email)
   const homePath = getHomePath(user?.role ?? null)
   const isAdmin = user?.role === 'ADMIN'
+  const messagesPath =
+    user?.role === 'ENTREPRENEUR'
+      ? '/messages'
+      : user?.role === 'SAEI'
+        ? '/saei/messages'
+        : null
   const homeLabel =
     user?.role === 'ENTREPRENEUR' ? 'Ma phase' : isAdmin ? 'Administration' : 'Mon espace'
   // L’accréditation SAEI est une démarche publique : elle n’apparaît pas dans
@@ -120,21 +133,46 @@ export function PublicHeader() {
                 to={link.to}
                 aria-current={active ? 'page' : undefined}
                 className={cn(
-                  'rounded-pill px-3 py-2 text-sm transition-colors',
+                  'inline-flex items-center gap-1.5 rounded-pill px-3 py-2 text-sm transition-colors',
                   active
                     ? 'bg-live font-medium text-ink-strong'
                     : 'text-ink-muted hover:bg-row hover:text-ink-strong',
                 )}
               >
+                {link.to === '/assistant' && (
+                  <SparklesIcon className="size-4 text-brand-hover" aria-hidden="true" />
+                )}
                 {link.label}
+                {link.to === '/messages' && <UnreadBadge count={unreadCount} className="ml-1.5" />}
               </Link>
             )
           })}
         </nav>
 
         <div className="ml-auto hidden items-center gap-2 lg:flex">
+          <LanguageSwitcher />
           {user ? (
             <>
+              {user.role === 'ENTREPRENEUR' && (
+                <Link
+                  to="/assistant"
+                  aria-label="Boussole, votre assistant intelligent"
+                  title="Boussole — assistant IA"
+                  className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), 'text-brand-hover')}
+                >
+                  <SparklesIcon className="size-4" aria-hidden="true" />
+                </Link>
+              )}
+              {messagesPath && (
+                <Link
+                  to={messagesPath}
+                  aria-label={`Messagerie, ${unreadCount} message(s) non lu(s)`}
+                  className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), 'relative')}
+                >
+                  <MessageSquareIcon className="size-4" aria-hidden="true" />
+                  <UnreadBadge count={unreadCount} className="absolute -top-1 -right-1" />
+                </Link>
+              )}
               <Link
                 to={homePath}
                 className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'gap-2')}
@@ -217,6 +255,7 @@ export function PublicHeader() {
                 {APP_NAME}
               </SheetTitle>
               <SheetDescription>Navigation principale</SheetDescription>
+              <LanguageSwitcher className="-ml-2 mt-1 self-start" />
             </SheetHeader>
 
             <div className="flex flex-1 flex-col gap-1 overflow-y-auto p-4">
@@ -228,13 +267,17 @@ export function PublicHeader() {
                       to={link.to}
                       aria-current={active ? 'page' : undefined}
                       className={cn(
-                        'rounded-field px-3 py-2.5 text-sm transition-colors',
+                        'inline-flex items-center gap-2 rounded-field px-3 py-2.5 text-sm transition-colors',
                         active
                           ? 'bg-live font-medium text-ink-strong'
                           : 'text-ink-body hover:bg-row',
                       )}
                     >
+                      {link.to === '/assistant' && (
+                        <SparklesIcon className="size-4 text-brand-hover" aria-hidden="true" />
+                      )}
                       {link.label}
+                      {link.to === '/messages' && <UnreadBadge count={unreadCount} className="ml-1.5" />}
                     </Link>
                   </SheetClose>
                 )
@@ -244,6 +287,18 @@ export function PublicHeader() {
 
               {user ? (
                 <>
+                  {messagesPath && (
+                    <SheetClose asChild>
+                      <Link
+                        to={messagesPath}
+                        className="flex items-center gap-2 rounded-field px-3 py-2.5 text-sm text-ink-body hover:bg-row"
+                      >
+                        <MessageSquareIcon className="size-4" aria-hidden="true" />
+                        Messagerie
+                        <UnreadBadge count={unreadCount} className="ml-auto" />
+                      </Link>
+                    </SheetClose>
+                  )}
                   <SheetClose asChild>
                     <Link to={homePath} className="rounded-field px-3 py-2.5 text-sm text-ink-body hover:bg-row">
                       {homeLabel}

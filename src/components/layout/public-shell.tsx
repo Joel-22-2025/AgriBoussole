@@ -1,6 +1,7 @@
 import { Outlet, ScrollRestoration } from 'react-router-dom'
 
 import { AppFooter } from './app-footer'
+import { BoussoleFab } from './boussole-fab'
 import { PublicHeader } from './public-header'
 
 export function PublicShell() {
@@ -11,6 +12,7 @@ export function PublicShell() {
         <Outlet />
       </main>
       <AppFooter />
+      <BoussoleFab />
       <ScrollRestoration />
     </div>
   )

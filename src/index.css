@@ -52,6 +52,10 @@
   /* Bordures */
   --border: #e6ece9;
 
+  /* Sidebar shadcn — branchée sur la charte IIH */
+  --sidebar-accent: rgba(255, 255, 255, 0.16);
+  --sidebar-border: rgba(255, 255, 255, 0.18);
+
   /* États */
   --danger: #ef4444;
   --warning: #f59e0b;
@@ -93,6 +97,16 @@
   --color-border: var(--border);
   --color-input: var(--border);
   --color-ring: var(--green-accent);
+
+  /* Sidebar shadcn (variant floating) habillée aux couleurs IIH */
+  --color-sidebar: var(--green-sidebar-bottom);
+  --color-sidebar-foreground: var(--text-on-deep);
+  --color-sidebar-primary: var(--green-icon-active);
+  --color-sidebar-primary-foreground: var(--green-on-icon-active);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--text-on-deep);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--green-icon-active);
 
   /* Jetons de la charte directement utilisables en classes */
   --color-brand: var(--green-accent);
@@ -178,6 +192,36 @@
   }
 }
 
+@layer components {
+  /* Sidebar flottante shadcn habillée selon la charte IIH. */
+  [data-slot='sidebar-inner'] {
+    background-image: var(--gradient-sidebar);
+    border-radius: var(--radius-side);
+    box-shadow: var(--shadow-charter-card);
+  }
+
+  /* Décalage flottant conseillé par la charte en mode déplié. */
+  [data-slot='sidebar-container'] {
+    padding: 18px;
+  }
+
+  /* Replié : on revient à 8 px pour que le bouton de 32 px ne soit pas rogné. */
+  [data-collapsible='icon'] [data-slot='sidebar-container'] {
+    padding: 8px;
+  }
+
+  /* Les icônes prennent toute la largeur du rail une fois repliées. */
+  [data-collapsible='icon'] [data-slot='sidebar-menu-button'] {
+    padding: 0 !important;
+  }
+
+  [data-collapsible='icon'] [data-slot='sidebar-menu-button'] > span:first-child {
+    width: 2rem !important;
+    height: 2rem !important;
+    min-width: 2rem !important;
+  }
+}
+
 @layer utilities {
   .tabular {
     font-variant-numeric: tabular-nums;
@@ -191,5 +235,14 @@
     width: 100%;
     max-width: 1280px;
     margin-inline: auto;
+    padding-inline: 1rem;
+    padding-block: 2.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .content-container {
+      padding-inline: 1.5rem;
+      padding-block: 3rem;
+    }
   }
 }

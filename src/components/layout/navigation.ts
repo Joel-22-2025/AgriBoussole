@@ -12,6 +12,7 @@ import {
   MessageSquareIcon,
   SettingsIcon,
   ShieldCheckIcon,
+  SparklesIcon,
   StarIcon,
   UserCheckIcon,
   UserRoundIcon,
@@ -35,7 +36,6 @@ const ADMIN_ROLES: Role[] = ['ADMIN']
 const ADMIN_MENU: NavItem[] = [
   { to: '/admin', label: 'Tableau de bord', icon: LayoutDashboardIcon, roles: ADMIN_ROLES, end: true },
   { to: '/admin/statistiques', label: 'Statistiques', icon: BarChart3Icon, roles: ADMIN_ROLES },
-  { to: '/structures', label: 'Structures (annuaire)', icon: Building2Icon, roles: ADMIN_ROLES },
   { to: '/admin/demandes-saei', label: 'Demandes SAEI', icon: UserCheckIcon, roles: ADMIN_ROLES },
   { to: '/admin/utilisateurs', label: 'Utilisateurs', icon: UsersIcon, roles: ADMIN_ROLES },
   {
@@ -84,8 +84,7 @@ const SAEI_MENU: NavItem[] = [
   { to: '/saei/notifications', label: 'Notifications', icon: BellIcon, roles: ['SAEI'] },
   { to: '/saei/messages', label: 'Messagerie', icon: MessageSquareIcon, roles: ['SAEI'] },
   { to: '/saei/profil', label: 'Mon profil', icon: UserRoundIcon, roles: ['SAEI'] },
-  { to: '/structures', label: 'Annuaire', icon: Building2Icon, roles: ['SAEI'] },
-  { to: '/', label: 'Accueil', icon: HomeIcon, roles: ['SAEI'], end: true },
+  { to: '/saei/assistant', label: 'Boussole IA', icon: SparklesIcon, roles: ['SAEI'] },
 ]
 
 const PUBLIC_MENU: NavItem[] = [

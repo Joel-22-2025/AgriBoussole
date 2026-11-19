@@ -1,41 +1,46 @@
-import { useEffect, useState, type CSSProperties } from 'react'
+import { useEffect, useState } from 'react'
 import { Outlet, ScrollRestoration } from 'react-router-dom'
 
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
+import { useUnreadCount } from '@/features/engagement/use-unread-count'
+
 import { AppFooter } from './app-footer'
-import { AppSidebar } from './app-sidebar'
+import { BoussoleFab } from './boussole-fab'
+import { DashboardNavbar } from './dashboard-navbar'
+import { DashboardSidebar } from './dashboard-sidebar'
 
 const STORAGE_KEY = 'agriboussole.sidebar.collapsed'
 
 export function AppShell() {
-  const [collapsed, setCollapsed] = useState(() => {
+  const [open, setOpen] = useState(() => {
     try {
-      return localStorage.getItem(STORAGE_KEY) === 'true'
+      return localStorage.getItem(STORAGE_KEY) !== 'true'
     } catch {
-      return false
+      return true
     }
   })
+  const unreadCount = useUnreadCount()
 
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, String(collapsed))
+      localStorage.setItem(STORAGE_KEY, String(!open))
     } catch {
       // Stockage indisponible : le repli reste valable pour la session en cours.
     }
-  }, [collapsed])
+  }, [open])
 
   return (
-    <div className="min-h-svh bg-page">
-      <AppSidebar collapsed={collapsed} onToggle={() => setCollapsed((value) => !value)} />
-      <div
-        className="flex min-h-svh flex-col md:pl-[var(--sidebar-offset)]"
-        style={{ '--sidebar-offset': collapsed ? '112px' : '276px' } as CSSProperties}
-      >
-        <main className="flex-1 px-4 pt-5 pb-24 md:px-6 md:pt-7 md:pb-7">
+    <SidebarProvider open={open} onOpenChange={setOpen} className="bg-page">
+      <DashboardSidebar unreadCount={unreadCount} />
+      <SidebarInset className="min-h-svh bg-page">
+        <DashboardNavbar unreadCount={unreadCount} />
+        <div className="flex-1 pb-10">
           <Outlet />
-        </main>
+        </div>
         <AppFooter variant="compact" />
-      </div>
+      </SidebarInset>
+      <BoussoleFab />
       <ScrollRestoration />
-    </div>
+    </SidebarProvider>
   )
 }

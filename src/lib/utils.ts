@@ -19,6 +19,15 @@ export function formatDate(value?: string | null): string {
   })
 }
 
+/** Heure locale d’envoi d’un message (HH:MM). */
+export function formatTime(value?: string | null): string {
+  if (!value) return ''
+  return new Date(value).toLocaleTimeString('fr-FR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
 export function getInitials(
   firstName?: string | null,
   lastName?: string | null,

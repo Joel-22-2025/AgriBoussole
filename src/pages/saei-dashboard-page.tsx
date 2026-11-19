@@ -1,9 +1,9 @@
 import {
   ArrowRightIcon,
   BarChart3Icon,
-  BellIcon,
   BriefcaseBusinessIcon,
   ClipboardListIcon,
+  MessageSquareIcon,
   StarIcon,
   UsersIcon,
 } from 'lucide-react'
@@ -15,28 +15,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/features/auth/use-auth'
 import { PageHeader } from '@/features/dashboard/components/page-header'
+import {
+  SaeiActivityChart,
+  SaeiEngagementChart,
+  SaeiKpiCard,
+  type SaeiMetric,
+} from '@/features/dashboard/components/saei-charts'
 import { fetchSaeiDashboard } from '@/lib/api/engagement'
 import { PAYS_LABELS } from '@/lib/api/types'
-import type { ReactNode } from 'react'
 import { useAsync } from '@/lib/use-async'
 import { getDisplayName, mediaUrl } from '@/lib/utils'
-
-function KpiCard({ icon, label, value, hint }: { icon: ReactNode; label: string; value: string | number; hint?: string }) {
-  return (
-    <Card>
-      <CardContent className="flex items-start gap-3 p-4">
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-card bg-live text-deep">
-          {icon}
-        </span>
-        <div className="min-w-0">
-          <p className="text-xs text-ink-muted">{label}</p>
-          <p className="text-xl font-semibold text-ink-strong">{value}</p>
-          {hint && <p className="text-[11px] text-ink-muted">{hint}</p>}
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
 
 export function SaeiDashboardPage() {
   const { state } = useAuth()
@@ -51,12 +39,93 @@ export function SaeiDashboardPage() {
         <Skeleton className="h-24 w-full rounded-card" />
         <div className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: 6 }, (_, index) => (
-            <Skeleton key={index} className="h-28 rounded-card" />
+            <Skeleton key={index} className="h-32 rounded-card" />
           ))}
+        </div>
+        <div className="grid gap-4 lg:grid-cols-5">
+          <Skeleton className="h-80 rounded-card lg:col-span-3" />
+          <Skeleton className="h-80 rounded-card lg:col-span-2" />
         </div>
       </div>
     )
   }
+
+  const entrepreneurs = data?.entrepreneurs ?? 0
+  const connectes = data?.entrepreneurs_connectes ?? 0
+  const offres = data?.offres ?? 0
+  const candidatures = data?.candidatures ?? 0
+  const indicateurs = data?.indicateurs ?? 0
+  const messages = data?.messages_non_lus ?? 0
+  const note = data?.note_moyenne ?? null
+  const max = Math.max(entrepreneurs, offres, candidatures, indicateurs, messages, 1)
+
+  const metrics: SaeiMetric[] = [
+    {
+      label: 'Entrepreneurs',
+      value: entrepreneurs,
+      numeric: entrepreneurs,
+      max,
+      hint: `${connectes} connectés`,
+      icon: <UsersIcon className="size-5" />,
+      accent: 'var(--chart-1)',
+    },
+    {
+      label: 'Offres publiées',
+      value: offres,
+      numeric: offres,
+      max,
+      icon: <BriefcaseBusinessIcon className="size-5" />,
+      accent: 'var(--chart-2)',
+    },
+    {
+      label: 'Candidatures reçues',
+      value: candidatures,
+      numeric: candidatures,
+      max,
+      icon: <ClipboardListIcon className="size-5" />,
+      accent: 'var(--chart-3)',
+    },
+    {
+      label: 'Indicateurs publiés',
+      value: indicateurs,
+      numeric: indicateurs,
+      max,
+      icon: <BarChart3Icon className="size-5" />,
+      accent: 'var(--chart-4)',
+    },
+    {
+      label: 'Messages non lus',
+      value: messages,
+      numeric: messages,
+      max,
+      icon: <MessageSquareIcon className="size-5" />,
+      accent: 'var(--chart-5)',
+    },
+    {
+      label: 'Note de l’équipe',
+      value: note ? `${note.toFixed(1)}/5` : '—',
+      numeric: note ?? 0,
+      max: 5,
+      hint: 'Évaluations des entrepreneurs',
+      icon: <StarIcon className="size-5" />,
+      accent: 'var(--chart-6)',
+    },
+  ]
+
+  const activityData = [
+    { name: 'Entrepr.', value: entrepreneurs, color: 'var(--chart-1)' },
+    { name: 'Offres', value: offres, color: 'var(--chart-2)' },
+    { name: 'Candid.', value: candidatures, color: 'var(--chart-3)' },
+    { name: 'Indic.', value: indicateurs, color: 'var(--chart-4)' },
+    { name: 'Messages', value: messages, color: 'var(--chart-5)' },
+  ]
+
+  const engagementData = [
+    { name: 'Candidatures', value: candidatures, color: 'var(--chart-3)' },
+    { name: 'Offres', value: offres, color: 'var(--chart-2)' },
+    { name: 'Indicateurs', value: indicateurs, color: 'var(--chart-4)' },
+    { name: 'Messages non lus', value: messages, color: 'var(--chart-5)' },
+  ].filter((segment) => segment.value > 0)
 
   return (
     <div className="content-container">
@@ -74,38 +143,26 @@ export function SaeiDashboardPage() {
       {error && <p className="mt-4 rounded-field bg-row px-4 py-3 text-sm text-ink-body">{error}</p>}
 
       <div className="mt-5 grid gap-3.5 sm:grid-cols-2 xl:grid-cols-3">
-        <KpiCard
-          icon={<UsersIcon className="size-5" />}
-          label="Entrepreneurs"
-          value={data?.entrepreneurs ?? 0}
-          hint={`${data?.entrepreneurs_connectes ?? 0} connectés`}
-        />
-        <KpiCard
-          icon={<BriefcaseBusinessIcon className="size-5" />}
-          label="Offres publiées"
-          value={data?.offres ?? 0}
-        />
-        <KpiCard
-          icon={<ClipboardListIcon className="size-5" />}
-          label="Candidatures reçues"
-          value={data?.candidatures ?? 0}
-        />
-        <KpiCard
-          icon={<BarChart3Icon className="size-5" />}
-          label="Indicateurs publiés"
-          value={data?.indicateurs ?? 0}
-        />
-        <KpiCard
-          icon={<BellIcon className="size-5" />}
-          label="Messages non lus"
-          value={data?.messages_non_lus ?? 0}
-        />
-        <KpiCard
-          icon={<StarIcon className="size-5" />}
-          label="Note de l’équipe"
-          value={data?.note_moyenne ? `${data.note_moyenne.toFixed(1)}/5` : '—'}
-          hint="Évaluations des entrepreneurs"
-        />
+        {metrics.map((metric) => (
+          <SaeiKpiCard key={metric.label} metric={metric} />
+        ))}
+      </div>
+
+      <div className="mt-5 grid gap-4 lg:grid-cols-5">
+        <div className="lg:col-span-3">
+          <SaeiActivityChart
+            title="Activité de la structure"
+            description="Volumes réels suivis par votre structure d’accompagnement."
+            data={activityData}
+          />
+        </div>
+        <div className="lg:col-span-2">
+          <SaeiEngagementChart
+            title="Répartition de l’engagement"
+            description="Candidatures, offres, indicateurs et messages en attente."
+            data={engagementData}
+          />
+        </div>
       </div>
 
       <div className="mt-5 grid gap-4 lg:grid-cols-3">
@@ -157,7 +214,7 @@ export function SaeiDashboardPage() {
               <ArrowRightIcon className="ml-auto size-4" />
             </Link>
             <Link to="/saei/messages" className={buttonVariants({ variant: 'outline', size: 'sm' })}>
-              <BellIcon className="size-4" />
+              <MessageSquareIcon className="size-4" />
               Ouvrir la messagerie
               <ArrowRightIcon className="ml-auto size-4" />
             </Link>

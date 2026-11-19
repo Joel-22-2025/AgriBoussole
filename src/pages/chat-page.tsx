@@ -29,7 +29,7 @@ import {
 } from '@/lib/api/engagement'
 import type { ChatMessage, Conversation } from '@/lib/api/types'
 import { useAsync } from '@/lib/use-async'
-import { formatDate } from '@/lib/utils'
+import { formatDate, formatTime } from '@/lib/utils'
 
 function Chat({ saei = false }: { saei?: boolean }) {
   const [searchParams] = useSearchParams()
@@ -184,6 +184,7 @@ function Chat({ saei = false }: { saei?: boolean }) {
                   <span className="truncate text-xs text-ink-muted">{conversation.sujet}</span>
                   {conversation.last_message && (
                     <span className="truncate text-[11px] text-ink-muted">
+                      {formatTime(conversation.last_message.created_at)}{' '}
                       {conversation.last_message.content}
                     </span>
                   )}
@@ -217,7 +218,8 @@ function Chat({ saei = false }: { saei?: boolean }) {
                     <div className={`max-w-[85%] rounded-card px-3 py-2 text-sm ${message.is_mine ? 'bg-deep text-white' : 'bg-row text-ink-body'}`}>
                       <p className="whitespace-pre-line">{message.content}</p>
                       <p className={`mt-1 text-[10px] ${message.is_mine ? 'text-white/70' : 'text-ink-muted'}`}>
-                        {message.sender_name} · {formatDate(message.created_at)}
+                        {message.sender_name} · {formatDate(message.created_at)} à{' '}
+                        {formatTime(message.created_at)}
                       </p>
                     </div>
                   </div>

@@ -10,6 +10,7 @@ import { AdminDashboardPage } from '@/pages/admin-dashboard-page'
 import { AdminPlaceholderPage } from '@/pages/admin-placeholder-page'
 import { SaeiRequestsPage } from '@/pages/admin-saei-requests-page'
 import { AdminUsersPage } from '@/pages/admin-users-page'
+import { AssistantPage } from '@/pages/assistant-page'
 import { CandidaturesPage } from '@/pages/candidatures-page'
 import { EntrepreneurChatPage, SaeiChatPage } from '@/pages/chat-page'
 import { EntrepreneurIndicatorsPage } from '@/pages/entrepreneur-indicators-page'
@@ -95,6 +96,14 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: 'assistant',
+        element: (
+          <RequireAuth roles={['ENTREPRENEUR']}>
+            <AssistantPage />
+          </RequireAuth>
+        ),
+      },
+      {
         path: 'profil',
         element: (
           <RequireAuth>
@@ -170,6 +179,14 @@ const router = createBrowserRouter([
         element: (
           <RequireAuth roles={['SAEI']}>
             <SaeiProfilePage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: 'saei/assistant',
+        element: (
+          <RequireAuth roles={['SAEI']}>
+            <AssistantPage audience="saei" />
           </RequireAuth>
         ),
       },
